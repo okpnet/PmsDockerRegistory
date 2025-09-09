@@ -1,21 +1,4 @@
 services:
-  certbot-init:
-    image: certbot/certbot:latest
-    container_name: certbot-init
-    volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./letsencrypt:/etc/letsencrypt
-      - ./libletsencrypt:/var/lib/letsencrypt
-    entrypoint: >
-      /bin/sh -c '
-      certbot certonly --standalone
-      --preferred-challenges http
-      --agree-tos
-      --no-eff-email
-      --email ${EMAIL}
-      -d ${DOMAIN}
-      '
-
   registry:
     image: registry:2
     container_name: registry
@@ -28,14 +11,6 @@ services:
     volumes:
       - ./letsencrypt:/etc/letsencrypt
       - registory-store:/var/lib/registry
-#自動更新
-  certbot-renew:
-      image: certbot/certbot:latest
-      container_name: certbot-renew
-      volumes:
-        - ./letsencrypt:/etc/letsencrypt
-        - ./libletsencrypt:/var/lib/letsencrypt
-      entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   registory-store:
