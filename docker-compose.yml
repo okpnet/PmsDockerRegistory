@@ -1,0 +1,46 @@
+services:
+  certbot-init:
+    image: certbot/certbot:latest
+    container_name: certbot-init
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./letsencrypt:/etc/letsencrypt
+      - ./libletsencrypt:/var/lib/letsencrypt
+    entrypoint: >
+      /bin/sh -c '
+      certbot certonly --standalone
+      --preferred-challenges http
+      --agree-tos
+      --no-eff-email
+      --email ${EMAIL}
+      -d ${DOMAIN}
+      '
+
+  registry:
+    image: registry:2
+    container_name: registry
+    restart: always
+    ports:
+      - "443:5000"
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /etc/letsencrypt/live/${DOMAIN}/fullchain.pem
+      REGISTRY_HTTP_TLS_KEY: /etc/letsencrypt/live/${DOMAIN}/privkey.pem
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+      - registory-store:/var/lib/registry
+#自動更新
+  certbot-renew:
+      image: certbot/certbot:latest
+      container_name: certbot-renew
+      volumes:
+        - ./letsencrypt:/etc/letsencrypt
+        - ./libletsencrypt:/var/lib/letsencrypt
+      entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  registory-store:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/usb/registry
+      o: bind
