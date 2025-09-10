@@ -1,0 +1,5 @@
+hasura/graphql-engine:v2.46.0
+hasura/graphql-data-connector:v2.46.0
+quay.io/keycloak/keycloak:26.3.3
+ncarlier/webhookd:latest
+postgres:14

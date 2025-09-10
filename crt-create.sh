@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
 DOMAIN=$1
-BASE_DIR="./letsencrypt/live/${DOMAIN}"
+BASE_DIR="/opt/letsencrypt/live/${DOMAIN}"
 
 mkdir -p "${BASE_DIR}"
 
@@ -26,6 +25,11 @@ prompt             = no
 
 [ req_distinguished_name ]
 CN = ${DOMAIN}
+C = JP
+ST = TOKYO
+L = TOKYO
+O = NO_COMPANY
+OU = NO=DEPARTMENT
 
 [ req_ext ]
 subjectAltName = @alt_names
