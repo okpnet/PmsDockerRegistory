@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -euo pipefail
 # ヘルプ表示関数
 show_help() {
   echo "Usage: $0 -l <image-list-file> -r <registry-machine> [-p <registry-port>]"
